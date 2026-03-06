@@ -40,7 +40,7 @@ jobs:
       run: |
         echo "## Result Version 1" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Roll No:** <YOUR_ROLL_NO>" >> $GITHUB_STEP_SUMMARY
+        echo "**Roll No:** 2022BCS0007" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Training Metrics" >> $GITHUB_STEP_SUMMARY
         cat metrics.json >> $GITHUB_STEP_SUMMARY
