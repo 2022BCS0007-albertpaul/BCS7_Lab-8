@@ -8,16 +8,16 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 data = pd.read_csv("data/housing.csv")
 
-# Remove rows with missing values
+# Remove missing values
 
 data = data.dropna()
 
-# Separate features and target
+# Features and target
 
 X = data.drop("median_house_value", axis=1)
 y = data["median_house_value"]
 
-# Convert categorical column to numeric
+# Convert categorical columns
 
 X = pd.get_dummies(X)
 
@@ -36,12 +36,10 @@ model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
 
-# Calculate metrics
+# Metrics
 
 rmse = mean_squared_error(y_test, y_pred, squared=False)
 r2 = r2_score(y_test, y_pred)
-
-# Save metrics
 
 metrics = {
 "dataset_size": len(data),
@@ -49,8 +47,10 @@ metrics = {
 "r2": float(r2)
 }
 
-with open("metrics.json", "w") as f:
-json.dump(metrics, f, indent=4)
+# Save metrics
 
-print("Training complete")
+with open("metrics.json", "w") as f:
+    json.dump(metrics, f, indent=4)
+
+print("Training Complete")
 print(metrics)
