@@ -11,42 +11,41 @@ runs-on: ubuntu-latest
 
 ```
 steps:
+  - name: Checkout Code
+    uses: actions/checkout@v3
 
-- name: Checkout Code
-  uses: actions/checkout@v3
+  - name: Setup Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: "3.10"
 
-- name: Setup Python
-  uses: actions/setup-python@v4
-  with:
-    python-version: "3.10"
+  - name: Install Dependencies
+    run: |
+      pip install -r requirements.txt
+      pip install dvc[s3]
+      pip install awscli
 
-- name: Install Dependencies
-  run: |
-    pip install -r requirements.txt
-    pip install dvc[s3]
-    pip install awscli
+  - name: Configure AWS Credentials
+    run: |
+      aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws configure set default.region us-east-1
 
-- name: Configure AWS Credentials
-  run: |
-    aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-    aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws configure set default.region us-east-1
+  - name: Pull Dataset from S3
+    run: dvc pull
 
-- name: Pull Dataset from S3
-  run: dvc pull
+  - name: Train Model
+    run: python src/train.py
 
-- name: Train Model
-  run: python src/train.py
+  - name: Save Metrics
+    uses: actions/upload-artifact@v4
+    with:
+      name: metrics
+      path: metrics.json
 
-- name: Save Metrics
-  uses: actions/upload-artifact@v4
-  with:
-    name: metrics
-    path: metrics.json
+  - name: Build Docker Image
+    run: docker build -t ml-model .
 
-- name: Build Docker Image
-  run: docker build -t ml-model .
-
-- name: Push Docker Image
-  run: echo "Docker push step here"
+  - name: Push Docker Image
+    run: echo "Docker push step here"
 ```
